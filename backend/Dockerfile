@@ -1,4 +1,4 @@
 FROM node:14
-WORKDIR /app
+WORKDIR /
 COPY . .
 CMD ["node", "server.js"]
