@@ -91,7 +91,7 @@ export default function Register() {
     async function submit(e) {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/auth/register", {
+            const response = await axios.post("auth/register", {
                 name, lastname, email, password, picture, gender, age, interests
             });
             console.log("resp:",response);
@@ -104,7 +104,7 @@ export default function Register() {
                 // localStorage.setItem('userInfo',userInfo);
                 // localStorage.setItem('userId',response.data._doc._id);
                 // Cookies.set("user",response.data._doc._id,{expires:30});
-                document.title = ` (${name})`
+                document.title = `Code Manager (${name})`
                 history("/");
                 toast.success(`Registered Successfully! as ${name}`, { theme: "dark", autoClose: 2000, position: "top-center" });
             }

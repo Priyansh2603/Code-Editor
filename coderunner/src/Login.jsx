@@ -46,7 +46,7 @@ export default function Login() {
     // console.log(email,password);
     try{
       console.log("yaha tak 1");
-        const res = await axios.post("http://localhost:5000/auth/Login", {
+        const res = await axios.post(`auth/Login`, {
            email, password,
           });
           console.log("yaha tak 2")

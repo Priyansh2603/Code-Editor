@@ -21,7 +21,7 @@ export default function App() {
   async function getUser() {
     try { // Assuming userId is the user ID you want to send
       const user_id = localStorage.getItem('userId')
-      const url = 'http://localhost:5000/auth/getuser'; // Define the URL for the getUser endpoint
+      const url = `auth/getuser`; // Define the URL for the getUser endpoint
       const data = { user_id: user_id }; // Define the data to be sent in the request body
   
       // Make a POST request using Axios
@@ -42,7 +42,7 @@ export default function App() {
   }
   const getFile = async(id)=>{
     try{
-      const res = await axios.post('http://localhost:5000/file/getfile',{userId:id});
+      const res = await axios.post(`file/getfile`,{userId:id});
       console.log(res.data);
       setProjects(res.data.files);
     }

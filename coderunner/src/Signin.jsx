@@ -43,7 +43,7 @@ export default function Signin() {
         e.preventDefault();
         console.log(email,password);
         try{
-            const res = await axios.post("http://localhost:5000/auth/login", {
+            const res = await axios.post("auth/login", {
                email, password,
               });
               console.log("yaha tak")
@@ -71,7 +71,7 @@ export default function Signin() {
                 loggedIn(true,name,res.data._id,res.data);
                 // localStorage.setItem("userId",res.data._id);
                 // Cookies.set("user",res.data._id,{expires:30});
-                document.title=`Shoeping (${name})`
+                document.title=`Code Manager (${name})`
                 history("/");
                 toast.success(`Logged in Successfully as ${name}`,{style: {
                     borderRadius: '10px',

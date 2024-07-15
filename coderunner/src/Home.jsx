@@ -51,7 +51,7 @@ export default function Home() {
     const [fname, setName] = useState('main.js');
     // const [project,setProject] = useState('');
     const { setProjects } = useContext(AppState);
-    const [output, setOutput] = useState('Output');
+    const [output, setOutput] = useState('//Output');
     const [code, setCode] = useState('//write code here');
     const [language, setLanguage] = useState('javascript');
     const { userId, userName, projects } = useContext(AppState);
@@ -69,7 +69,7 @@ export default function Home() {
                 });
                 return;
             }
-            const res = await axios.post('http://localhost:8000/file/runcode', { code, language });
+            const res = await axios.post('file/runcode', { code, language });
             toast('Code Ran Successfully', {
                 icon: '🚀',
                 style: {
@@ -88,7 +88,7 @@ export default function Home() {
     }
     const getFile = async (id) => {
         try {
-            const res = await axios.post('http://localhost:8000/file/getfile', { userId: id });
+            const res = await axios.post('file/getfile', { userId: id });
             console.log(res.data);
             setProjects(res.data.files);
         }
@@ -98,7 +98,7 @@ export default function Home() {
     }
     const deleteFile = async (id) => {
         try {
-            const res = await axios.post('http://localhost:8000/file/deletefile', { userId: userId, fileId: id });
+            const res = await axios.post('file/deletefile', { userId: userId, fileId: id });
             console.log(res.data);
             setProjects(res.data.files);
             if (projects.length === 0) { setCode("//write code here"); }
@@ -121,7 +121,7 @@ export default function Home() {
             toast.error("Couldn't saved file try again with valid project name");
             return;
         }
-        axios.post('http://localhost:8000/file/savefile', formData)
+        axios.post(`/file/savefile`, formData)
             .then(response => {
                 console.log(response.data);
                 getFile(userId);
