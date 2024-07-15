@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const filerouter = require('./routes/filerouter')
+const filerouter = require('./routes/filerouter.js')
 const authroute=  require("./routes/authroute.js")
 const cors = require('cors')
 const dotenv = require('dotenv');
