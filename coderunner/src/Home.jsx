@@ -162,7 +162,7 @@ export default function Home() {
         </button>
         <button disabled={fileName === 'index.html'} onClick={() => setFileName('index.html')}>
           index.html
-        </button> */}'
+        </button> */}
                 <ChakraProvider theme={theme}>
                     {/* <Button colorScheme='teal' m='2' ml='2' onClick={() => setName(language === 'javascript' ? "main.js" : "main.py")}>
                         {language === 'javascript' ? "main.js" : "main.py"}
