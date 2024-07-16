@@ -18,7 +18,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Toaster as ToastContainer, toast } from 'react-hot-toast';
 // import 'react-toastify/dist/ReactToastify.css';
 
-import axios from 'axios';
+import {axios} from 'axios';
 import { useContext } from 'react'
 import {AppState} from './App'
 import { Heading, useToast } from '@chakra-ui/react';

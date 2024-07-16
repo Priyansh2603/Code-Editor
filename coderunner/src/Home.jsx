@@ -69,7 +69,7 @@ export default function Home() {
                 });
                 return;
             }
-            const res = await axios.post('file/runcode', { code, language });
+            const res = await axios.post("file/runcode", { code, language });
             toast('Code Ran Successfully', {
                 icon: '🚀',
                 style: {
@@ -82,7 +82,7 @@ export default function Home() {
             setOutput(res.data.output);
         }
         catch (e) {
-            setOutput("Error Running Code!");
+            setOutput("Error Running Code!",e);
             console.log(e);
         }
     }
@@ -207,6 +207,8 @@ export default function Home() {
                             <option>Select language</option>
                             <option value="javascript">javaScript</option>
                             <option value="python">python</option>
+                            <option value="cpp">c++</option>
+                            <option value="java">java</option>
                         </Select>
                     </label>
                 </ChakraProvider>
@@ -249,7 +251,7 @@ export default function Home() {
                         <Editor
                             height="93.4vh"
                             theme="vs-dark"
-                            width={'60vw'}
+                            width={'50vw'}
                             value={code}
                             onChange={(newCode) => {
                                 setCode(newCode)
@@ -264,7 +266,7 @@ export default function Home() {
                         <Editor
                             height="93.4vh"
                             theme="vs-dark"
-                            width={'40vw'}
+                            width={'50vw'}
                             value={output}
                             disabled
                             defaultLanguage={"txt"}
