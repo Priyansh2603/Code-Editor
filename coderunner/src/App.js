@@ -5,7 +5,7 @@ import Signin from './Signin';
 import Home from './Home';
 import Navbar from './Navbar';
 import Register from './Register';
-import {axios} from 'axios';
+import axios from 'axios';
 import Profile from './Profile';
 const AppState = createContext();
 export default function App() {
