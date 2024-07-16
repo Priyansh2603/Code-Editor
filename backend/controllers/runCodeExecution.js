@@ -27,7 +27,7 @@ const runCode = async (code, language) => {
     // Write the code content to a temporary file in the script directory
     const fileName = join(scriptDir, `Main.${language}`);
     await fs.writeFile(fileName, code);
-    const outputFileName = join(scriptDir, `MainOutput.${language}`);
+    const outputFileName = join(scriptDir, language=='java'?`Main.${language}`:`MainOutput.${language}`);
     // Execute the code from the temporary file
     const command = getCommand(language,fileName, outputFileName);
     console.log(code);
