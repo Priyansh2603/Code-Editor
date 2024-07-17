@@ -26,7 +26,7 @@ const runCode = async (code, language, inputs) => {
     // Write the code content to a temporary file in the script directory
     const fileName = join(scriptDir, `Main.${language}`);
     await fs.writeFile(fileName, code);
-    const outputFileName = join(scriptDir, language=='java'?`Main.${language}`:`MainOutput.${language}`);
+    const outputFileName = join(scriptDir, language=='java'?`Main`:`MainOutput`);
     const inputFile = join(scriptDir, 'input.txt');
     await fs.writeFile(inputFile, inputs);
     // Execute the code from the temporary file
@@ -43,18 +43,22 @@ const runCode = async (code, language, inputs) => {
       await fs.unlink(outputFileName);
     } else if (language === 'java') {
       await fs.unlink(`${outputFileName}.class`);
+    }else{
+      await fs.unlink(outputFileName);
     }
     if (stderr) {
       // throw new Error(stderr);
-      // console.log(stderr);
-      return error;
+      console.log(stderr);
+      await fs.unlink(inputFile);
+      return stderr;
     }
     return stdout;
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     const scriptDir = __dirname;
     const fileName = join(scriptDir, `Main.${language}`);
     await fs.unlink(fileName);
+    await fs.unlink('input.txt');
     const errorLines = error.message.split('\n').slice(2).join('\n');
     const formattedError = `Error: \n${errorLines}`;
     return formattedError;

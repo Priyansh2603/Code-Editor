@@ -74,7 +74,7 @@ export default function Home() {
                 return;
             }
             
-            const res = await axios.post("http://localhost:8000/file/runcode", { code, language,inputs });
+            const res = await axios.post("file/runcode", { code, language,inputs });
             toast('Code Ran Successfully', {
                 icon: '🚀',
                 style: {
