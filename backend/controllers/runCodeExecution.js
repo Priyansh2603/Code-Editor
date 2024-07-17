@@ -58,7 +58,7 @@ const runCode = async (code, language, inputs) => {
     const scriptDir = __dirname;
     const fileName = join(scriptDir, `Main.${language}`);
     await fs.unlink(fileName);
-    await fs.unlink('input.txt');
+    // await fs.unlink('input.txt');
     const errorLines = error.message.split('\n').slice(2).join('\n');
     const formattedError = `Error: \n${errorLines}`;
     return formattedError;
