@@ -23,6 +23,7 @@ import {
   useColorModeValue,
   Heading,
   Spacer,
+  Image,
 } from '@chakra-ui/react';
 import {
     Select,
@@ -34,14 +35,15 @@ import {
     MenuGroup,
     MenuOptionGroup,
     MenuDivider,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
+import logo from './images/editor.png'
 export default function Home() {
     const { colorMode, toggleColorMode } = useColorMode();
     const {login,user,loggedIn} = useContext(AppState);
     const bgColor = useColorModeValue('gray.200', 'gray.800');
     const color = useColorModeValue('gray.800', 'white');
     const navHoverBg = useColorModeValue('gray.300', 'gray.700');
-    console.log("home",login);
+    // console.log("home",login);
   function logout(){
     loggedIn(false,'','',{});
     toast.success("Logged Out Successfully!");
@@ -51,13 +53,15 @@ export default function Home() {
     const [fname, setName] = useState('main.js');
     // const [project,setProject] = useState('');
     const { setProjects } = useContext(AppState);
-    const [output, setOutput] = useState('//Output');
+    const [output, setOutput] = useState('');
     const [code, setCode] = useState('//write code here');
-    const [language, setLanguage] = useState('javascript');
+    const [language, setLanguage] = useState('select Language');
+    const [inputs, setInputs] = useState('');
     const { userId, userName, projects } = useContext(AppState);
     const RunCode = async () => {
         try {
-            console.log(code, " ", language)
+            // console.log(code, " ", language)
+            
             if (code === "//write code here") {
                 toast("Nothing to Run!", {
                     icon: '🧿',
@@ -69,7 +73,8 @@ export default function Home() {
                 });
                 return;
             }
-            const res = await axios.post("file/runcode", { code, language });
+            
+            const res = await axios.post("http://localhost:8000/file/runcode", { code, language,inputs });
             toast('Code Ran Successfully', {
                 icon: '🚀',
                 style: {
@@ -78,57 +83,57 @@ export default function Home() {
                     color: '#fff',
                 },
             });
-            console.log(res.data);
+            // console.log(res.data);
             setOutput(res.data.output);
         }
         catch (e) {
             setOutput("Error Running Code!",e);
-            console.log(e);
+            // console.log(e);
         }
     }
     const getFile = async (id) => {
         try {
             const res = await axios.post('file/getfile', { userId: id });
-            console.log(res.data);
+            // console.log(res.data);
             setProjects(res.data.files);
         }
         catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     }
     const deleteFile = async (id) => {
         try {
             const res = await axios.post('file/deletefile', { userId: userId, fileId: id });
-            console.log(res.data);
+            // console.log(res.data);
             setProjects(res.data.files);
             if (projects.length === 0) { setCode("//write code here"); }
         }
         catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     }
     const createAndUploadFile = () => {
         const content = code;
         const formData = new FormData();
         formData.append('file', new Blob([content], { type: `text/${language}` }), `main.${language}`);
-        console.log("form: ", content);
+        // console.log("form: ", content);
         const project = prompt("Enter Project Name", `main.${language}`);
         formData.append('name', project);
         formData.append('userId', userId);
         formData.append('userName', userName);
-        console.log(project);
+        // console.log(project);
         if(!project){
             toast.error("Couldn't saved file try again with valid project name");
             return;
         }
         axios.post(`/file/savefile`, formData)
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 getFile(userId);
                 toast.success("Saved File to Records!", { style: { backgroundColor: 'black', color: 'white' } })
             })
             .catch(error => {
-                console.error('Error:', error);
+                // console.error('Error:', error);
             });
 
     };
@@ -149,6 +154,7 @@ export default function Home() {
                 bg={bgColor}
                 color={color}
             >
+                <Image w={14} h={14} src={logo} alt="Not found"/>
                 <Flex align="center" mr={5}>
                     <Text as={Link} to="/" fontSize="2xl" fontWeight="bold" letterSpacing="wide">
                         Code Manager
@@ -182,7 +188,7 @@ export default function Home() {
                                     <MenuItem onClick={() => {
                                         setCode(e.data);
                                         let str = e.contentType.substr(5, e.contentType.length);
-                                        console.log(str);
+                                        // console.log(str);
                                         setLanguage(str);
                                     }} key={i}><Text w={'90%'}>{e.name}</Text> <MdDelete size={22} alignmentBaseline='end' onClick={() => {
                                         deleteFile(e._id);
@@ -219,7 +225,7 @@ export default function Home() {
                             <MenuButton  >
 
                                 <Avatar size="md" name="User Name" onClick={() => {
-                                    console.log(user.picture);
+                                    // console.log(user.picture);
                                 }} src={user.picture} />
                             </MenuButton>
                             <MenuList>
@@ -249,29 +255,47 @@ export default function Home() {
                 <div style={{ display: 'flex' }}>
                     <div>
                         <Editor
-                            height="93.4vh"
+                            height="85.5vh"
                             theme="vs-dark"
                             width={'50vw'}
                             value={code}
                             onChange={(newCode) => {
                                 setCode(newCode)
-                                console.log(newCode)
+                                // console.log(newCode)
                             }}
                             path={fname}
                             language={language}
                         />
                     </div>
-                    <div>
-
-                        <Editor
-                            height="93.4vh"
-                            theme="vs-dark"
-                            width={'50vw'}
-                            value={output}
-                            disabled
-                            defaultLanguage={"txt"}
-                        />
+                    <div style={{ display: 'flex', flexDirection: 'column', width: '50vw',height:'85.5vh' }}>
+                    <div style={{ height: '50%' }}>
+                    <Editor
+                        height="100%"
+                        theme="vs-dark"
+                        width="100%"
+                        value={inputs}
+                        on={()=>{if(inputs=="// Input Here"){
+                            setInputs('');
+                        }}}
+                        onChange={(input) => {
+                        setInputs(input);
+                        }}
+                        defaultLanguage="txt"
+                    />
                     </div>
+                    <div style={{ height: '50%' }}>
+                    <Editor
+                        height="100%"
+                        theme="vs-dark"
+                        width="100%"
+                        value={"//Outputs\n"+output}
+                        options={{
+                            readOnly: true,
+                          }}
+                        defaultLanguage="txt"
+                    />
+                    </div>
+                </div>
                 </div>
                 
             
