@@ -13,6 +13,7 @@ import {
   IconButton,
   Center,
   Textarea,
+  Box,
 } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { AppState } from './App';
@@ -30,7 +31,11 @@ export default function Profile() {
     bio: user.bio,
     picture: user.picture,
   });
+  const [isFullSize, setIsFullSize] = useState(false);
 
+  const handleAvatarClick = () => {
+    setIsFullSize(!isFullSize);
+  };
   const toggleEditMode = () => {
     setEditMode((prevMode) => !prevMode);
   };
@@ -51,12 +56,15 @@ export default function Profile() {
   };
 
   return (
+    <>
+    
     <Flex
       minH={'100vh'}
       align={'center'}
       justify={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}
     >
+      
       <Stack
         spacing={4}
         w={'full'}
@@ -67,14 +75,26 @@ export default function Profile() {
         p={6}
         my={12}
       >
+        {isFullSize&&<div className={isFullSize ? 'full-size-image-container' : ''}>
+        <img
+          src={formData.picture}
+          alt="Avatar"
+          className={isFullSize ? 'full-size-image' : 'avatar-image'}
+          onClick={handleAvatarClick}
+        />
+      </div>}
         <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           My Account {editMode ? 'Edit' : ''}
         </Heading>
+        
+
         <FormControl id="picture" >
           <FormLabel>{formData.name}</FormLabel>
           <Stack direction={['column', 'row']} spacing={6}>
             <Center>
-              <Avatar size="xl" src={formData.picture}>
+              <Avatar cursor={'pointer'} onClick={() => {
+                    handleAvatarClick();
+                  }} size="xl" src={formData.picture}>
                 <AvatarBadge
                   as={IconButton}
                   size="sm"
@@ -84,23 +104,21 @@ export default function Profile() {
                   aria-label="remove Image"
                   icon={<SmallCloseIcon />}
                   onClick={() => {
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      picture: '', // Clear picture when remove button is clicked
-                    }));
+                    handleAvatarClick();
                   }}
                 />
               </Avatar>
             </Center>
             <Center w="full">
-              <Button w="full" disabled={!editMode}>
+              <Button w="full" disabled={!editMode} onClick={toggleEditMode}>
                 Edit Profile
               </Button>
             </Center>
           </Stack>
         </FormControl>
+        <Box display={!editMode&&'flex'}>
         <FormControl id="userName" >
-          <FormLabel>Name</FormLabel>
+          <FormLabel>{editMode?'Firstname':user.name+"  "+user.lastname}</FormLabel>
           <Input
             placeholder="Name"
             _placeholder={{ color: 'primary' }}
@@ -110,10 +128,11 @@ export default function Profile() {
             value={formData.name}
             onChange={handleChange}
             disabled={!editMode}
+            display={editMode?'flex':'none'}
           />
         </FormControl>
-        <FormControl id="lastname" >
-          <FormLabel>Lastname</FormLabel>
+        <FormControl id="lastname" display={!editMode&&'none'}>
+          <FormLabel>{editMode?'Lastname':user.lastname}</FormLabel>
           <Input
             placeholder="Lastname"
             _placeholder={{ color: 'gray.500' }}
@@ -122,10 +141,12 @@ export default function Profile() {
             value={formData.lastname}
             onChange={handleChange}
             disabled={!editMode}
+            
           />
         </FormControl>
+        </Box>
         <FormControl id="age" >
-          <FormLabel>Age</FormLabel>
+          <FormLabel>Age{editMode?'':": "+user.age}</FormLabel>
           <Input
             placeholder="Age"
             _placeholder={{ color: 'gray.500' }}
@@ -134,10 +155,11 @@ export default function Profile() {
             value={formData.age}
             onChange={handleChange}
             disabled={!editMode}
+            display={editMode?'flex':'none'}
           />
         </FormControl>
         <FormControl id="email" >
-          <FormLabel>Email address</FormLabel>
+          <FormLabel>Email {editMode?'address':": "+user.email}</FormLabel>
           <Input
             placeholder="Your email"
             _placeholder={{ color: 'gray.500' }}
@@ -146,10 +168,11 @@ export default function Profile() {
             value={formData.email}
             onChange={handleChange}
             disabled={!editMode}
+            display={editMode?'flex':'none'}
           />
         </FormControl>
         <FormControl id="interests" >
-          <FormLabel>Interests</FormLabel>
+          <FormLabel>Interests {editMode?'':": "+(user.interests[1]?user.interests:"Not Specified")}</FormLabel>
           <Input
             placeholder="Interests"
             _placeholder={{ color: 'gray.500' }}
@@ -158,11 +181,11 @@ export default function Profile() {
             value={formData.interests}
             onChange={handleChange}
             disabled={!editMode}
+            display={editMode?'flex':'none'}
           />
         </FormControl>
-        {editMode && (
           <FormControl id="bio" >
-            <FormLabel>Bio</FormLabel>
+            <FormLabel>Bio {editMode?'':": "+(user.bio?user.interests:"Not Added")}</FormLabel>
             <Textarea
               placeholder="Bio"
               _placeholder={{ color: 'gray.500' }}
@@ -170,20 +193,20 @@ export default function Profile() {
               name="bio"
               value={formData.bio}
               onChange={handleChange}
+              display={editMode?'flex':'none'}
             />
           </FormControl>
-        )}
         <Stack spacing={2} direction={['column', 'row']}>
-          <Button
-            bg={editMode ? 'red.400' : 'blue.400'}
+          <Button display={editMode?'flex':'none'}
+            bg={'blue.400'}
             color={'white'}
             w="full"
             _hover={{
-              bg: editMode ? 'red.500' : 'blue.500',
+              bg:'blue.100',
             }}
-            onClick={editMode ? toggleEditMode : handleSubmit}
+            onClick={editMode && handleSubmit}
           >
-            {editMode ? 'Cancel' : 'Submit'}
+            {'Submit'}
           </Button>
           {!editMode && (
             <Button
@@ -198,14 +221,17 @@ export default function Profile() {
               Edit
             </Button>
           )}
-          <Button bg={'blue.400'}
+          <Button 
+          onClick={editMode&& toggleEditMode}
               color={'white'}
+              bg={editMode ? 'red.400' : 'blue.400'}
               w="full"
               _hover={{
-                bg: 'blue.200',
-              }}><Link to={'/'}>Back</Link></Button>
+                bg: editMode ? 'red.200' : 'blue.200',
+              }}>{editMode ? 'Cancel' : <Link to={'/'}>Back</Link>}</Button>
         </Stack>
       </Stack>
     </Flex>
+    </>
   );
 }
