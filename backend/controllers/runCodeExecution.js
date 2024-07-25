@@ -2,7 +2,7 @@ const util = require('util');
 const { exec } = require('child_process');
 const fs = require('fs').promises;
 const { join } = require('path');
-const {compileAndRunJavaCode} = require('./runJavaCode');
+const compileAndRunJavaCode = require('./runJavaCode');
 const getCommand = (language, fileName, outputFileName, inputFile) => {
   switch (language) {
     case 'javascript':

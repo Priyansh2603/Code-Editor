@@ -21,12 +21,24 @@ async function compileAndRunJavaCode(code, inputs) {
         exec(command, async (error, stdout, stderr) => {
             if (error) {
                 console.error(`Execution error: ${error.message}`);
-                await fs.unlink(inputFile);
+                try {
+                    await fs.unlink(fileName);
+                    await fs.unlink(inputFile);
+                    await fs.unlink(classFile);
+                } catch (cleanupError) {
+                    console.error(`Cleanup error: ${cleanupError.message}`);
+                }
                 return error;
             }
             if (stderr) {
                 console.error(`Compilation/Execution stderr: ${stderr}`);
-                await fs.unlink(inputFile);
+                try {
+                    await fs.unlink(fileName);
+                    await fs.unlink(inputFile);
+                    await fs.unlink(classFile);
+                } catch (cleanupError) {
+                    console.error(`Cleanup error: ${cleanupError.message}`);
+                }
                 return stderr;
             }
             console.log(`Output: ${stdout}`);
@@ -53,4 +65,4 @@ async function compileAndRunJavaCode(code, inputs) {
         return err.message;
     }
 }
-export {compileAndRunJavaCode};
+module.exports = compileAndRunJavaCode;
