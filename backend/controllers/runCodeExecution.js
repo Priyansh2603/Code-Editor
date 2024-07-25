@@ -2,7 +2,7 @@ const util = require('util');
 const { exec } = require('child_process');
 const fs = require('fs').promises;
 const { join } = require('path');
-
+const {compileAndRunJavaCode} = require('./runJavaCode');
 const getCommand = (language, fileName, outputFileName, inputFile) => {
   switch (language) {
     case 'javascript':
@@ -19,6 +19,10 @@ const getCommand = (language, fileName, outputFileName, inputFile) => {
   }
 };
 const runCode = async (code, language, inputs) => {
+  if(language==='java'){
+    compileAndRunJavaCode(code,inputs);
+    return;
+  }
   try {
     // Get the directory of the script
     const scriptDir = __dirname;
@@ -43,8 +47,6 @@ const runCode = async (code, language, inputs) => {
       await fs.unlink(outputFileName);
     } else if (language === 'java') {
       await fs.unlink(`${outputFileName}.class`);
-    }else{
-      await fs.unlink(outputFileName);
     }
     if (stderr) {
       // throw new Error(stderr);
